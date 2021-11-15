@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { Trip } from './trips/trip.entity';
 import { TripsModule } from './trips/trips.module';
 
@@ -19,7 +17,5 @@ import { TripsModule } from './trips/trips.module';
       synchronize: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
