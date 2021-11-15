@@ -19,7 +19,7 @@ export class TripsService {
       startAddress,
       destinationAddress,
       price,
-      date,
+      date: new Date(date),
     });
     await this.tripRepository.save(trip);
     return trip.id;
