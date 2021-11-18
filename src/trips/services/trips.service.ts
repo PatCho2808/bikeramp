@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { from, Observable, switchMap } from 'rxjs';
 import { Repository } from 'typeorm';
 import { DistanceService } from './distance.service';
-import { Trip } from './trip.entity';
+import { Trip } from '../trip.entity';
 
 @Injectable()
 export class TripsService {

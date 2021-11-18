@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { TripsService } from './trips.service';
+import { TripsService } from './services/trips.service';
 
 @Controller('api/trips')
 export class TripsController {
