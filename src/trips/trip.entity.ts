@@ -16,4 +16,7 @@ export class Trip {
 
   @Column('date')
   date: Date;
+
+  @Column()
+  distance: number;
 }
