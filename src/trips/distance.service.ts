@@ -1,10 +1,14 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { map, Observable } from 'rxjs';
 
 @Injectable()
 export class DistanceService {
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    private configService: ConfigService,
+  ) {}
   private readonly url =
     'https://maps.googleapis.com/maps/api/distancematrix/json';
 
@@ -15,7 +19,7 @@ export class DistanceService {
     return this.httpService
       .get(this.url, {
         params: {
-          key: 'AIzaSyAm9g95Jy_ueu7LHjIGdW0D_To0SeKZvPM',
+          key: this.configService.get('googleApi').key,
           destinations: destinationAddress,
           origins: startAddress,
         },

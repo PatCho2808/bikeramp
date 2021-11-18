@@ -1,20 +1,26 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import configuration from './config/configuration';
 import { Trip } from './trips/trip.entity';
 import { TripsModule } from './trips/trips.module';
 
 @Module({
   imports: [
     TripsModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      database: 'postgres',
-      password: '123456',
-      entities: [Trip],
-      synchronize: true,
+    ConfigModule.forRoot({
+      load: [configuration],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        return {
+          ...configService.get('database'),
+          entities: [Trip],
+          synchronize: true,
+        };
+      },
+      inject: [ConfigService],
     }),
   ],
 })

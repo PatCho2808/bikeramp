@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, map, Observable, switchMap, tap } from 'rxjs';
+import { from, Observable, switchMap } from 'rxjs';
 import { Repository } from 'typeorm';
 import { DistanceService } from './distance.service';
 import { Trip } from './trip.entity';
