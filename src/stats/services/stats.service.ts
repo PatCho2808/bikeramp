@@ -28,8 +28,8 @@ export class StatsService {
   private getSumsByDateRange(startDate: Date, endDate: Date) {
     return this.tripRepository
       .createQueryBuilder('trip')
-      .where('trip.date > :mondayDate', { startDate })
-      .andWhere('trip.date < :sundayDate', { endDate })
+      .where('trip.date > :startDate', { startDate })
+      .andWhere('trip.date < :endDate', { endDate })
       .select('SUM(trip.distance)', 'distance')
       .addSelect('SUM(trip.price)', 'price')
       .getRawOne();
