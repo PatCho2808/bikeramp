@@ -13,15 +13,7 @@ export class StatsService {
   getWeeklyStats() {
     const mondayDate = this.getMondayDateOfCurrentWeek();
     const sundayDate = this.getSundayDateOfCurrentWeek();
-    return from(
-      this.tripRepository
-        .createQueryBuilder('trip')
-        .where('trip.date > :mondayDate', { mondayDate })
-        .andWhere('trip.date < :sundayDate', { sundayDate })
-        .select('SUM(trip.distance)', 'distance')
-        .addSelect('SUM(trip.price)', 'price')
-        .getRawOne(),
-    ).pipe(
+    return from(this.getSumsByDateRange(mondayDate, sundayDate)).pipe(
       map((result) => {
         return {
           total_distance: `${result.distance / 1000}km`,
@@ -43,5 +35,15 @@ export class StatsService {
     const day = today.getDay();
     const diff = today.getDate() + 7 - day + (day === 0 ? -7 : 0);
     return new Date(today.setDate(diff));
+  }
+
+  private getSumsByDateRange(startDate: Date, endDate: Date) {
+    return this.tripRepository
+      .createQueryBuilder('trip')
+      .where('trip.date > :mondayDate', { startDate })
+      .andWhere('trip.date < :sundayDate', { endDate })
+      .select('SUM(trip.distance)', 'distance')
+      .addSelect('SUM(trip.price)', 'price')
+      .getRawOne();
   }
 }
