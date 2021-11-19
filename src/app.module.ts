@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from './config/configuration';
 import { Trip } from './trips/trip.entity';
 import { TripsModule } from './trips/trips.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TripsModule } from './trips/trips.module';
       },
       inject: [ConfigService],
     }),
+    StatsModule,
   ],
 })
 export class AppModule {}
