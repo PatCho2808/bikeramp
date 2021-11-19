@@ -5,6 +5,7 @@ import configuration from './config/configuration';
 import { Trip } from './trips/trip.entity';
 import { TripsModule } from './trips/trips.module';
 import { StatsModule } from './stats/stats.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { StatsModule } from './stats/stats.module';
       inject: [ConfigService],
     }),
     StatsModule,
+    SharedModule,
   ],
 })
 export class AppModule {}

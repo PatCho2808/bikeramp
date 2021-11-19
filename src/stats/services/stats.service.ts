@@ -2,17 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Trip } from 'src/trips/trip.entity';
-import { from, map, Observable } from 'rxjs';
+import { from, map } from 'rxjs';
+import { DatesService } from 'src/shared/dates.service';
 
 @Injectable()
 export class StatsService {
   constructor(
     @InjectRepository(Trip) private tripRepository: Repository<Trip>,
+    private datesServices: DatesService,
   ) {}
 
   getWeeklyStats() {
-    const mondayDate = this.getMondayDateOfCurrentWeek();
-    const sundayDate = this.getSundayDateOfCurrentWeek();
+    const mondayDate = this.datesServices.getMondayDateOfCurrentWeek();
+    const sundayDate = this.datesServices.getSundayDateOfCurrentWeek();
     return from(this.getSumsByDateRange(mondayDate, sundayDate)).pipe(
       map((result) => {
         return {
@@ -21,20 +23,6 @@ export class StatsService {
         };
       }),
     );
-  }
-
-  private getMondayDateOfCurrentWeek() {
-    const today = new Date();
-    const day = today.getDay();
-    const diff = today.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(today.setDate(diff));
-  }
-
-  private getSundayDateOfCurrentWeek() {
-    const today = new Date();
-    const day = today.getDay();
-    const diff = today.getDate() + 7 - day + (day === 0 ? -7 : 0);
-    return new Date(today.setDate(diff));
   }
 
   private getSumsByDateRange(startDate: Date, endDate: Date) {
@@ -48,8 +36,10 @@ export class StatsService {
   }
 
   getMonthlyStats() {
-    const dateOfFirstDayOfMonth = this.getDateOfFirstDayOfTheMonth();
-    const dateOfLastDayOfMonth = this.getDateOfLastDayOfTheMonth();
+    const dateOfFirstDayOfMonth =
+      this.datesServices.getDateOfFirstDayOfTheMonth();
+    const dateOfLastDayOfMonth =
+      this.datesServices.getDateOfLastDayOfTheMonth();
     return from(
       this.getRawStatsByDateRange(dateOfFirstDayOfMonth, dateOfLastDayOfMonth),
     ).pipe(
@@ -64,16 +54,6 @@ export class StatsService {
         });
       }),
     );
-  }
-
-  private getDateOfFirstDayOfTheMonth() {
-    const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth(), 2);
-  }
-
-  private getDateOfLastDayOfTheMonth() {
-    const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth() + 1, 1);
   }
 
   private getRawStatsByDateRange(startDate: Date, endDate: Date) {
