@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Trip } from 'src/trips/trip.entity';
 import { from, map } from 'rxjs';
-import { DatesService } from 'src/shared/dates.service';
+import { DatesService } from 'src/shared/services/dates.service';
 
 @Injectable()
 export class StatsService {
@@ -46,7 +46,7 @@ export class StatsService {
       map((result) => {
         return result.map((dailySummary) => {
           return {
-            day: dailySummary.trip_date,
+            day: this.datesServices.getFormattedDate(dailySummary.trip_date),
             total_distance: `${dailySummary.distanceSum / 1000}km`,
             avg_ride: `${dailySummary.distanceAvg / 1000}km`,
             avg_price: `${parseInt(dailySummary.priceAvg).toFixed(2)}PLN`,
