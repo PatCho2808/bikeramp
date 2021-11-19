@@ -16,7 +16,7 @@ export class TripsService {
     startAddress: string,
     destinationAddress: string,
     price: number,
-    date: string,
+    date: Date,
   ): Observable<Trip> {
     return this.distanceService
       .getDistance(startAddress, destinationAddress)
@@ -26,7 +26,7 @@ export class TripsService {
             startAddress,
             destinationAddress,
             price,
-            date: new Date(date),
+            date,
             distance,
           });
           return from(this.tripRepository.save(trip));

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JoiValidationPipe } from './pipes/joi.pipe';
 import { DatesService } from './services/dates.service';
 
 @Module({
