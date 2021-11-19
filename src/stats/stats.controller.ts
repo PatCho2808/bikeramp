@@ -5,7 +5,13 @@ import { StatsService } from './services/stats.service';
 export class StatsController {
   constructor(private statsService: StatsService) {}
 
-  @Get('weekly') getWeeklyStats() {
+  @Get('weekly')
+  getWeeklyStats() {
     return this.statsService.getWeeklyStats();
+  }
+
+  @Get('monthly')
+  getMonthlyStats() {
+    return this.statsService.getMonthlyStats();
   }
 }

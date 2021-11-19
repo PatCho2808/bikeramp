@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Trip } from 'src/trips/trip.entity';
-import { from, map } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 
 @Injectable()
 export class StatsService {
@@ -45,5 +45,47 @@ export class StatsService {
       .select('SUM(trip.distance)', 'distance')
       .addSelect('SUM(trip.price)', 'price')
       .getRawOne();
+  }
+
+  getMonthlyStats() {
+    const dateOfFirstDayOfMonth = this.getDateOfFirstDayOfTheMonth();
+    const dateOfLastDayOfMonth = this.getDateOfLastDayOfTheMonth();
+    return from(
+      this.getRawStatsByDateRange(dateOfFirstDayOfMonth, dateOfLastDayOfMonth),
+    ).pipe(
+      map((result) => {
+        return result.map((dailySummary) => {
+          return {
+            day: dailySummary.trip_date,
+            total_distance: `${dailySummary.distanceSum / 1000}km`,
+            avg_ride: `${dailySummary.distanceAvg / 1000}km`,
+            avg_price: `${parseInt(dailySummary.priceAvg).toFixed(2)}PLN`,
+          };
+        });
+      }),
+    );
+  }
+
+  private getDateOfFirstDayOfTheMonth() {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 2);
+  }
+
+  private getDateOfLastDayOfTheMonth() {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth() + 1, 1);
+  }
+
+  private getRawStatsByDateRange(startDate: Date, endDate: Date) {
+    return this.tripRepository
+      .createQueryBuilder('trip')
+      .where('trip.date > :startDate', { startDate })
+      .andWhere('trip.date < :endDate', { endDate })
+      .select('SUM(trip.distance)', 'distanceSum')
+      .addSelect('trip.date')
+      .addSelect('AVG(trip.distance)', 'distanceAvg')
+      .addSelect('AVG(trip.price)', 'priceAvg')
+      .groupBy('trip.date')
+      .getRawMany();
   }
 }
