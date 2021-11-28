@@ -22,13 +22,13 @@ export class TripsService {
       .getDistance(startAddress, destinationAddress)
       .pipe(
         switchMap((distance) => {
-          const trip = this.tripRepository.create({
+          const trip = new Trip(
             startAddress,
             destinationAddress,
             price,
             date,
             distance,
-          });
+          );
           return from(this.tripRepository.save(trip));
         }),
       );
