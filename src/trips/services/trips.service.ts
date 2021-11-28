@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, Observable, switchMap } from 'rxjs';
 import { Repository } from 'typeorm';
-import { DistanceService } from './distance.service';
+import { DistanceServiceAdapter } from './distance.service';
 import { Trip } from '../trip.entity';
 
 @Injectable()
 export class TripsService {
   constructor(
     @InjectRepository(Trip) private tripRepository: Repository<Trip>,
-    private distanceService: DistanceService,
+    private distanceService: DistanceServiceAdapter,
   ) {}
 
   addTrip(
